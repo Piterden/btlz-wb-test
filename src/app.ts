@@ -1,4 +1,5 @@
 import { CronJob } from 'cron';
+import env from "#config/env/env.js";
 import { getDate } from "#utils/helpers.js";
 import { APP as log } from "#utils/logger.js";
 import { migrate, seed } from "#postgres/knex.js";
@@ -7,8 +8,10 @@ import { uploadTariffsToSheets } from "#services/gs.service.js";
 import { wb2DbMapper, db2SheetsMapper } from "#utils/mappers.js";
 import { saveBoxTariffsToDb, getSortedTariffs } from "#services/db.service.js";
 
+const { CRON_UPDATE_TIME } = env;
+
 await migrate.latest();
-// await seed.run();
+await seed.run();
 log.info("All migrations have been run.");
 
 const worker = async () => {
@@ -21,11 +24,10 @@ const worker = async () => {
 };
 
 const job = CronJob.from({
-    cronTime: '*/10 * * * *',
+    cronTime: CRON_UPDATE_TIME ?? '*/10 * * * *',
     onTick: worker,
     start: true,
     waitForCompletion: true,
     runOnInit: true,
     timeZone: "UTC+3",
 });
-

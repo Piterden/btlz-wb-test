@@ -1,54 +1,52 @@
-# Шаблон для выполнения тестового задания
+# Тестовое задание
 
-## Описание
-Шаблон подготовлен для того, чтобы попробовать сократить трудоемкость выполнения тестового задания.
+## Инструкция
 
-В шаблоне настоены контейнеры для `postgres` и приложения на `nodejs`.  
-Для взаимодействия с БД используется `knex.js`.  
-В контейнере `app` используется `build` для приложения на `ts`, но можно использовать и `js`.
+Клонируйте репозиторий.
 
-Шаблон не является обязательным!\
-Можно использовать как есть или изменять на свой вкус.
-
-Все настройки можно найти в файлах:
-- compose.yaml
-- dockerfile
-- package.json
-- tsconfig.json
-- src/config/env/env.ts
-- src/config/knex/knexfile.ts
-
-## Команды:
-
-Запуск базы данных:
-```bash
-docker compose up -d --build postgres
+```sh
+$ git clone git@github.com:Piterden/btlz-wb-test.git
 ```
 
-Для выполнения миграций и сидов не из контейнера:
-```bash
-npm run knex:dev migrate latest
+Создайте .env файл.
+
+```sh
+$ cp example.env .env
 ```
 
-```bash
-npm run knex:dev seed run
-```
-Также можно использовать и остальные команды (`migrate make <name>`,`migrate up`, `migrate down` и т.д.)
+В нём нужно указать токен для доступа к API Wildberries (`WB_API_TOKEN`). Также, в файле .env можно менять адрес получения данных (`WB_API_URL`) и настраивать частоту обновления даннах по cron (`CRON_UPDATE_TIME`) и название листа для записи данных в гугл-таблицах (`GOOGLE_SHEET_NAME`).
 
-Для запуска приложения в режиме разработки:
-```bash
-npm run dev
+Создайте credentials типа JSON в консоли Google и поместите полученный файл в корень проекта под названием `credentials.json`. При необходимости можно поменять ему путь (`GOOGLE_CREDENTIALS_PATH`), не забыв при этом исправить .gitignore, а также проброс самого файла в качестве volume в контейнер `app` в файле compose.yaml.
+
+## Добавление таблиц Google
+
+Добавить таблицы можно через сидер src/postgres/seeds/spreadsheets.js или через консольную команду, запускаемую из контейнера.
+
+```sh
+$ docker exec -it app /bin/sh              
+/app # npm run spreadsheets help
+
+> btlz-test@1.0.0 spreadsheets
+> node dist/utils/spreadsheets.command.js help
+
+Usage: spreadsheets [options] [command]
+
+CLI spreadsheets manager.
+
+Options:
+  -h, --help              display help for command
+
+Commands:
+  list|ls                 get all spreadsheets
+  add|create <id> [name]  add spreadsheet to DB
+  remove|delete <id>      remove spreadsheet from DB
+  help [command]          display help for command
 ```
 
-Запуск проверки самого приложения:
-```bash
-docker compose up -d --build app
-```
+Стоит помнить, что у добавленной таблицы должен быть разрешен доступ для редактирования тем email, который вам выдал гугл внутри JSON файла credentials `client_email`!
 
-Для финальной проверки рекомендую:
-```bash
-docker compose down --rmi local --volumes
-docker compose up --build
-```
+## Запуск
 
-PS: С наилучшими пожеланиями!
+```sh
+$ docker compose up --build
+```

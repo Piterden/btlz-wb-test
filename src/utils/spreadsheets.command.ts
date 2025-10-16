@@ -16,7 +16,6 @@ program
     .command("list")
     .summary("get all spreadsheets")
     .alias('ls')
-    .alias('l')
     .action(async () => {
         const list = await getAllSpreadsheets();
         if (list.length === 0) {
@@ -35,6 +34,7 @@ program
 program
     .command("add <id> [name]")
     .summary("add spreadsheet to DB")
+    .alias('new')
     .action(async (id, name) => {
         await addSpreadsheet(id, name);
     });
@@ -42,6 +42,7 @@ program
 program
     .command("remove <id>")
     .summary("remove spreadsheet from DB")
+    .alias('rm')
     .action(async (id) => {
         await removeSpreadsheet(id);
     });

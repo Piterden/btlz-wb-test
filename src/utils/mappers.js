@@ -47,7 +47,7 @@ export const wb2DbMapper = (list, date) =>
  * DB select to Google sheets mapper.
  *
  * @param {TariffFromDB[]} rows The rows from DB
- * @return {{ values: Array[] }}
+ * @return {GoogleSheetsData}
  */
 export const db2SheetsMapper = (rows) => ({
     values: [

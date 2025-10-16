@@ -46,6 +46,6 @@ export const uploadTariffsToSheets = async (data) => {
             resource: data,
         });
 
-        log.info(`Spreadsheet ${sheet.spreadsheet_id} completed.`);
+        log.info(`Spreadsheet ${sheet.spreadsheet_id} updated.`);
     }
 };

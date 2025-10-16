@@ -78,3 +78,7 @@ export interface SpreadsheetFromDB {
     name: string | null;
     created_at: Date;
 }
+
+export interface GoogleSheetsData {
+    values: string[][];
+}
